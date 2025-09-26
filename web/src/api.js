@@ -45,3 +45,4 @@ export async function fetchLogs() {
 export function exportLogsUrl() {
   return `${API_URL}/api/logs/me/export`;
 }
+
