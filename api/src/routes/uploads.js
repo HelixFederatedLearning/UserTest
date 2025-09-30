@@ -7,6 +7,8 @@ import { runInference } from '../services/onnx.js';
 import { UploadLog } from '../models/UploadLog.js';
 import { storeImageIfConsented } from '../services/storage.js';
 
+
+
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage(), limits: { files: 2, fileSize: 8 * 1024 * 1024 } });
 

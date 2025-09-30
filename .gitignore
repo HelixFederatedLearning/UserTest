@@ -50,3 +50,6 @@ api/model/**/*.onnx
 
 # --- Misc ---
 *.seed
+
+dr_model.onnx
+model/best_resnet18_aptos.pth
