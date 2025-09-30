@@ -1,10 +1,13 @@
+// api/src/models/User.js
 import mongoose from 'mongoose';
 
-const userSchema = new mongoose.Schema({
-  username: { type: String, unique: true, required: true, index: true },
-  passwordHash: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
-  meta: { type: Object, default: {} }
-});
+const UserSchema = new mongoose.Schema(
+  {
+    username: { type: String, unique: true, required: true, index: true },
+    passwordHash: { type: String, required: true },
+    // add fields like email, role, etc., later
+  },
+  { collection: 'users', timestamps: true }
+);
 
-export const User = mongoose.model('User', userSchema);
+export const User = mongoose.model('User', UserSchema);

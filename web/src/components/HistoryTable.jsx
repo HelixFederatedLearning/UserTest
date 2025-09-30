@@ -1,4 +1,33 @@
+// web/src/components/HistoryTable.jsx
 import React from 'react';
+
+const CLASSES = ["No_DR", "Mild", "Moderate", "Severe", "Proliferative_DR"];
+
+function pct(p) {
+  if (p == null) return '-';
+  return (p * 100).toFixed(1) + '%';
+}
+
+function ProbBars({ preds }) {
+  const map = Object.fromEntries((preds || []).map(p => [p.label, p.prob]));
+  return (
+    <div className="space-y-1">
+      {CLASSES.map(label => {
+        const prob = map[label] ?? 0;
+        return (
+          <div key={label}>
+            <div className="flex justify-between text-xs">
+              <span>{label}</span><span>{pct(prob)}</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded h-1.5">
+              <div className="bg-indigo-600 h-1.5 rounded" style={{ width: `${Math.min(100, (prob || 0) * 100)}%` }} />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 export default function HistoryTable({ logs }) {
   const downloadCsv = async () => {
@@ -35,22 +64,23 @@ export default function HistoryTable({ logs }) {
               <th className="p-2">Timestamp</th>
               <th className="p-2">Files</th>
               <th className="p-2">Consent</th>
-              <th className="p-2">Predictions</th>
+              <th className="p-2">Top class</th>
+              <th className="p-2">Probabilities</th>
             </tr>
           </thead>
           <tbody>
-            {logs.map((l, idx) => (
-              <tr key={idx} className="border-b">
-                <td className="p-2">{new Date(l.createdAt).toLocaleString()}</td>
-                <td className="p-2">{(l.filenames || []).join(', ')}</td>
-                <td className="p-2">{l.consent ? 'Yes' : 'No'}</td>
-                <td className="p-2">
-                  {(l.predictions || []).map((p, i) => (
-                    <div key={i}><strong>{p.label}</strong></div>
-                  ))}
-                </td>
-              </tr>
-            ))}
+            {logs.map((l, idx) => {
+              const top = (l.predictions && l.predictions[0]) || null;
+              return (
+                <tr key={idx} className="border-b align-top">
+                  <td className="p-2 whitespace-nowrap">{new Date(l.createdAt).toLocaleString()}</td>
+                  <td className="p-2">{(l.filenames || []).join(', ')}</td>
+                  <td className="p-2">{l.consent ? 'Yes' : 'No'}</td>
+                  <td className="p-2">{top ? `${top.label} (${pct(top.prob)})` : '-'}</td>
+                  <td className="p-2 w-96"><ProbBars preds={l.predictions} /></td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

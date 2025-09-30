@@ -1,63 +1,88 @@
+// api/src/routes/uploads.js
 import express from 'express';
 import multer from 'multer';
-import { z } from 'zod';
-import { authRequired } from '../middleware/auth.js';
 import { preprocessToTensor } from '../utils/preprocess.js';
-import { runInference } from '../services/onnx.js';
+import { ensureSessionLoaded, runInference } from '../services/onnx.js';
 import { UploadLog } from '../models/UploadLog.js';
-import { storeImageIfConsented } from '../services/storage.js';
 
-
+// NOTE: If your project uses a custom auth middleware, keep its import name the same.
+// Commonly something like:
+import { requireAuth } from '../middleware/auth.js';
 
 const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage(), limits: { files: 2, fileSize: 8 * 1024 * 1024 } });
 
-const bodySchema = z.object({
-  consent: z.coerce.boolean()
+// Multer: memory storage, 2 files max, ~8MB each (adjust if you like)
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { files: 2, fileSize: 8 * 1024 * 1024 }
 });
 
-// Map raw model outputs to human labels. Adjust for your model.
-function postprocess(outputTensor) {
-  const arr = Array.from(outputTensor.data);
-  // If output is logits for 5 classes:
-  const labels = ['No DR', 'Mild', 'Moderate', 'Severe', 'Proliferative DR'];
-  // softmax
-  const exps = arr.map(x => Math.exp(x - Math.max(...arr)));
+const DR_LABELS = ["No_DR", "Mild", "Moderate", "Severe", "Proliferative_DR"];
+
+function softmax(logits) {
+  const max = Math.max(...logits);
+  const exps = logits.map(v => Math.exp(v - max));
   const sum = exps.reduce((a, b) => a + b, 0);
-  const probs = exps.map(x => x / sum);
-  const topIdx = probs.indexOf(Math.max(...probs));
-  return { classIndex: topIdx, label: labels[topIdx] || `Class ${topIdx}`, probabilities: probs };
+  return exps.map(v => v / sum);
 }
 
-router.post('/upload', authRequired, upload.array('images', 2), async (req, res, next) => {
+function postprocess(outputTensor) {
+  // outputTensor may be: ort.Tensor with .data, or mock { data: Float32Array }
+  const data = outputTensor?.data ?? outputTensor;
+  const logits = Array.from(data);
+  const probs = softmax(logits);
+
+  // Build labeled probs and sort desc
+  const predictions = DR_LABELS.map((label, i) => ({
+    label,
+    prob: probs[i] ?? 0
+  })).sort((a, b) => b.prob - a.prob);
+
+  const top = predictions[0] ?? { label: '', prob: 0 };
+  return { predictions, top };
+}
+
+// POST /api/upload
+router.post('/upload', requireAuth, upload.array('images', 2), async (req, res, next) => {
   try {
-    const { consent } = bodySchema.parse(req.body);
-    if (!req.files || req.files.length === 0) return res.status(400).json({ error: 'No images uploaded' });
+    await ensureSessionLoaded();
 
-    // process each file
-    const predictions = [];
-    const filenames = [];
-    for (const file of req.files) {
-      const tensor = await preprocessToTensor(file.buffer);
-      const output = await runInference(tensor);
-      const pred = postprocess(output);
-      predictions.push({ originalName: file.originalname, ...pred });
-      filenames.push(file.originalname);
-
-      if (consent) {
-        try { await storeImageIfConsented(file.buffer, file.mimetype); } catch (e) { console.warn('Storage failed', e.message); }
-      }
+    const consent = String(req.body?.consent || '').toLowerCase() === 'true';
+    const files = req.files || [];
+    if (!files.length) {
+      return res.status(400).json({ error: 'No image files provided' });
     }
 
+    // preprocess first file (you can extend to batch if your model supports it)
+    const tensors = [];
+    for (const f of files) {
+      const t = await preprocessToTensor(f.buffer);
+      tensors.push(t);
+    }
+    // For now, run single-image inference per upload (first image)
+    const output = await runInference(tensors[0]);
+
+    const { predictions, top } = postprocess(output);
+    const filenames = files.map(f => f.originalname);
+
+    // Save log (probabilities included)
     await UploadLog.create({
-      userId: req.user.sub,
+      userId: req.user._id,
       filenames,
       consent,
-      predictions
+      predictions,
+      createdAt: new Date()
     });
 
-    res.json({ ok: true, predictions });
-  } catch (e) { next(e); }
+    // Return all preds (sorted) & top
+    res.json({
+      ok: true,
+      top,
+      predictions
+    });
+  } catch (err) {
+    next(err);
+  }
 });
 
 export default router;
