@@ -45,11 +45,11 @@ Thumbs.db
 *.swo
 
 # --- Model artifacts (don’t commit large binaries) ---
-api/model/*.onnx
-api/model/**/*.onnx
+# api/model/*.onnx
+# api/model/**/*.onnx
 
 # --- Misc ---
 *.seed
 
-dr_model.onnx
+# dr_model.onnx
 model/best_resnet18_aptos.pth
