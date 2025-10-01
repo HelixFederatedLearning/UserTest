@@ -8,12 +8,21 @@ export default function Dashboard() {
   const [refresh, setRefresh] = useState(0);
 
   useEffect(() => {
-    fetchLogs().then(d => setLogs(d.logs)).catch(console.error);
+    let cancelled = false;
+    (async () => {
+      try {
+        const d = await fetchLogs();
+        if (!cancelled && Array.isArray(d?.logs)) setLogs(d.logs);
+      } catch (e) {
+        console.warn('fetchLogs error (non-fatal):', e?.message || e);
+      }
+    })();
+    return () => { cancelled = true; };
   }, [refresh]);
 
   return (
     <div className="space-y-6">
-      <UploadCard onComplete={() => setRefresh(x=>x+1)} />
+      <UploadCard onComplete={() => setRefresh(x => x + 1)} />
       <HistoryTable logs={logs} />
     </div>
   );

@@ -14,7 +14,7 @@ const router = express.Router();
 // Multer: memory storage, 2 files max, ~8MB each (adjust if you like)
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { files: 2, fileSize: 8 * 1024 * 1024 }
+  limits: { files: 1, fileSize: 8 * 1024 * 1024 }
 });
 
 const DR_LABELS = ["No_DR", "Mild", "Moderate", "Severe", "Proliferative_DR"];
