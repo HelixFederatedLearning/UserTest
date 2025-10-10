@@ -1,0 +1,133 @@
+/* Root palette (override or map to Tailwind CSS variables if you like) */
+:root {
+  --tc-primary: #6366f1; /* indigo-500 */
+  --tc-accent:  #06b6d4; /* cyan-500 */
+
+  --tc-green-600: #16a34a;
+  --tc-amber-500: #f59e0b;
+  --tc-orange-500: #f97316;
+  --tc-red-500:   #ef4444;
+  --tc-rose-600:  #e11d48;
+
+  --tc-border-color: rgba(17, 24, 39, 0.08); /* gray-900 @8% */
+}
+
+/* Card */
+.tc-card {
+  @apply w-full rounded-2xl border bg-white p-4 md:p-5;
+  border-color: var(--tc-border-color);
+  box-shadow:
+    0 1px 1px rgba(17, 24, 39, 0.04),
+    0 4px 12px rgba(17, 24, 39, 0.06);
+  transition: box-shadow 200ms ease, transform 200ms ease;
+}
+.tc-card:hover {
+  box-shadow:
+    0 2px 4px rgba(17, 24, 39, 0.06),
+    0 16px 28px rgba(17, 24, 39, 0.08);
+}
+
+/* Borders */
+.tc-border {
+  border-color: var(--tc-border-color);
+}
+
+/* Grid + axes tweaks */
+.tc-grid line {
+  stroke: rgba(17, 24, 39, 0.08);
+}
+.tc-axis line,
+.tc-axis-tick line {
+  stroke: rgba(17, 24, 39, 0.2);
+}
+.tc-axis-tick text {
+  fill: rgba(17, 24, 39, 0.6);
+  font-size: 11.5px;
+}
+
+/* Dots */
+.tc-dot {
+  background: radial-gradient(circle at 30% 30%, var(--tc-accent), var(--tc-primary));
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+.tc-dot-stroke {
+  stroke: #fff;
+  fill: #fff;
+}
+.tc-dot-active {
+  stroke: #fff;
+  fill: var(--tc-primary);
+  filter: drop-shadow(0 2px 6px rgba(99, 102, 241, 0.35));
+}
+
+/* Tooltip */
+.tc-tooltip {
+  padding: 10px 12px;
+}
+.tc-kv {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px;
+}
+.tc-k {
+  color: rgba(17, 24, 39, 0.55);
+}
+.tc-v {
+  text-align: right;
+  color: rgba(17, 24, 39, 0.9);
+  font-weight: 600;
+}
+
+/* Badges & chips */
+.tc-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 999px;
+  border: 1px solid var(--tc-border-color);
+  background: #fff;
+}
+.tc-badge--server {
+  color: #065f46;
+  background: #ecfdf5;
+  border-color: rgba(6, 95, 70, 0.15);
+}
+.tc-badge--client {
+  color: #1e40af;
+  background: #eff6ff;
+  border-color: rgba(30, 64, 175, 0.15);
+}
+.tc-chip {
+  font-size: 10.5px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.05);
+  color: rgba(17, 24, 39, 0.7);
+}
+.tc-chip--muted {
+  background: rgba(17, 24, 39, 0.04);
+  color: rgba(17, 24, 39, 0.45);
+  border: 1px dashed rgba(17, 24, 39, 0.12);
+}
+
+/* Empty state icon wrapper */
+.tc-emptystate {
+  background: radial-gradient(circle at 30% 30%, rgba(6, 182, 212, 0.2), rgba(99, 102, 241, 0.18));
+  border: 1px solid var(--tc-border-color);
+}
+
+/* Legend */
+.tc-legend {
+  font-size: 11px;
+  line-height: 1;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--tc-border-color);
+}
+
+/* Elevation utility for tooltip shadow (works without Tailwind, too) */
+.shadow-lg {
+  box-shadow:
+    0 10px 15px -3px rgba(0,0,0,0.1),
+    0 4px 6px -4px rgba(0,0,0,0.1);
+}

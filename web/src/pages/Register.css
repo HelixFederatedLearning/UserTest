@@ -1,0 +1,123 @@
+:root{
+  --rg-primary: #6366f1; /* indigo-500 */
+  --rg-accent:  #06b6d4; /* cyan-500 */
+  --rg-border: rgba(17,24,39,.10);
+  --rg-border-strong: rgba(17,24,39,.16);
+}
+
+/* Card */
+.rg-card{
+  @apply bg-white rounded-2xl p-5 md:p-6;
+  border:1px solid var(--rg-border);
+  box-shadow:
+    0 1px 1px rgba(17,24,39,.04),
+    0 8px 24px rgba(17,24,39,.06);
+}
+
+/* Logo */
+.rg-logo{
+  @apply h-10 w-10 rounded-xl grid place-items-center;
+  background: radial-gradient(circle at 30% 30%, rgba(6,182,212,.2), rgba(99,102,241,.18));
+  border:1px solid var(--rg-border);
+}
+
+/* Field + label */
+.rg-field{ @apply block; }
+.rg-label{ @apply text-sm font-medium text-gray-800 mb-1.5 block; }
+.rg-hint-inline{ @apply text-[11px] text-gray-500 font-normal; }
+
+/* Input */
+.rg-input{
+  @apply relative flex items-center rounded-xl border bg-white;
+  border-color: var(--rg-border);
+  transition: box-shadow .15s ease, border-color .15s ease;
+}
+.rg-input:focus-within{
+  border-color: color-mix(in oklab, var(--rg-primary) 45%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--rg-primary) 18%, transparent);
+}
+.rg-input.is-invalid{
+  border-color: #fca5a5;
+  box-shadow: 0 0 0 3px rgba(239,68,68,.15);
+}
+.rg-input input{
+  @apply w-full px-3 py-2.5 text-sm text-gray-900 rounded-xl outline-none;
+  padding-left: 2.25rem; /* icon space */
+}
+.rg-input input::placeholder{ @apply text-gray-400; }
+.rg-input__icon{
+  @apply absolute left-2.5 text-gray-400 select-none;
+  font-size: 14px;
+}
+
+/* Show/hide */
+.rg-eye{
+  @apply absolute right-2.5 text-gray-500 text-sm px-2 py-1 rounded-md;
+  background:#f8fafc;
+  border:1px solid var(--rg-border);
+}
+.rg-eye:hover{ filter: brightness(1.02); }
+
+/* Strength meter */
+.rg-strength{
+  @apply mt-2 grid grid-cols-4 gap-1;
+}
+.rg-strength__bar{
+  height: 6px; border-radius: 999px; background:#e5e7eb; /* gray-200 */
+  transition: background .2s ease, transform .2s ease;
+}
+.rg-strength__bar.s-1,
+.rg-strength__bar.s-2,
+.rg-strength__bar.s-3,
+.rg-strength__bar.s-4{
+  background: linear-gradient(90deg, var(--rg-primary), var(--rg-accent));
+  transform: translateY(-0.5px);
+}
+.rg-strength__label{
+  @apply text-xs text-gray-500 mt-1;
+}
+
+/* Caps hint & errors */
+.rg-hint{ @apply text-xs text-amber-700; }
+.rg-hint--error{ @apply text-xs text-red-600 mt-1; }
+
+/* Checkbox + links */
+.rg-check{ @apply inline-flex items-center gap-2 text-sm text-gray-700; }
+.rg-check input{
+  @apply h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-400;
+}
+.rg-link{ @apply text-sm font-medium text-indigo-600 hover:text-indigo-700; }
+
+/* Button */
+.rg-btn{
+  @apply inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-medium transition;
+  border:1px solid var(--rg-border);
+  background:#fff;
+  color:#111827;
+}
+.rg-btn:disabled{ @apply opacity-60 cursor-not-allowed; }
+.rg-btn--primary{
+  color:#fff;
+  border-color: transparent;
+  background: linear-gradient(90deg,var(--rg-primary), var(--rg-accent));
+}
+.rg-btn--primary:hover{ filter: brightness(1.03); }
+.rg-btn--primary:active{ transform: translateY(0.5px); }
+
+/* Error banner */
+.rg-alert{
+  @apply mb-3 flex items-center gap-2 text-sm rounded-xl px-3 py-2;
+  background:#fef2f2; color:#991b1b; border:1px solid #fecaca;
+}
+.rg-alert svg{ flex: 0 0 auto; }
+
+/* Spinner */
+.rg-spinner{
+  width: 16px; height: 16px; border-radius: 999px;
+  border: 2px solid rgba(255,255,255,.45);
+  border-top-color: #fff;
+  animation: rg-spin .8s linear infinite;
+}
+@keyframes rg-spin{
+  to { transform: rotate(360deg); }
+}

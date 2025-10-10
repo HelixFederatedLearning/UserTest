@@ -1,0 +1,110 @@
+:root{
+  --lg-primary: #6366f1; /* indigo-500 */
+  --lg-accent:  #06b6d4; /* cyan-500 */
+  --lg-border: rgba(17,24,39,.10);
+  --lg-border-strong: rgba(17,24,39,.16);
+}
+
+/* Card */
+.lg-card{
+  @apply bg-white rounded-2xl p-5 md:p-6;
+  border:1px solid var(--lg-border);
+  box-shadow:
+    0 1px 1px rgba(17,24,39,.04),
+    0 8px 24px rgba(17,24,39,.06);
+}
+
+/* Logo */
+.lg-logo{
+  @apply h-10 w-10 rounded-xl grid place-items-center;
+  background: radial-gradient(circle at 30% 30%, rgba(6,182,212,.2), rgba(99,102,241,.18));
+  border:1px solid var(--lg-border);
+}
+
+/* Field + label */
+.lg-field{ @apply block; }
+.lg-label{
+  @apply text-sm font-medium text-gray-800 mb-1.5 block;
+}
+
+/* Input */
+.lg-input{
+  @apply relative flex items-center rounded-xl border bg-white;
+  border-color: var(--lg-border);
+  transition: box-shadow .15s ease, border-color .15s ease;
+}
+.lg-input:focus-within{
+  border-color: color-mix(in oklab, var(--lg-primary) 45%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--lg-primary) 18%, transparent);
+}
+.lg-input input{
+  @apply w-full px-3 py-2.5 text-sm text-gray-900 rounded-xl outline-none;
+  padding-left: 2.25rem; /* space for icon */
+}
+.lg-input input::placeholder{ @apply text-gray-400; }
+.lg-input__icon{
+  @apply absolute left-2.5 text-gray-400 select-none;
+  font-size: 14px;
+}
+
+/* Show/hide button */
+.lg-eye{
+  @apply absolute right-2.5 text-gray-500 text-sm px-2 py-1 rounded-md;
+  background: #f8fafc;
+  border:1px solid var(--lg-border);
+}
+.lg-eye:hover{ filter: brightness(1.02); }
+
+/* Caps lock hint */
+.lg-hint{
+  @apply mt-1 text-xs text-amber-700 inline-flex items-center gap-1;
+}
+
+/* Checkbox */
+.lg-check{
+  @apply inline-flex items-center gap-2 text-sm text-gray-700;
+}
+.lg-check input{
+  @apply h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-400;
+}
+
+/* Links */
+.lg-link{
+  @apply text-sm font-medium text-indigo-600 hover:text-indigo-700 focus:outline-none;
+}
+
+/* Button */
+.lg-btn{
+  @apply inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-medium transition;
+  border:1px solid var(--lg-border);
+  background:#fff;
+  color:#111827;
+}
+.lg-btn:disabled{ @apply opacity-60 cursor-not-allowed; }
+.lg-btn--primary{
+  color:#fff;
+  border-color: transparent;
+  background: linear-gradient(90deg,var(--lg-primary), var(--lg-accent));
+}
+.lg-btn--primary:hover{ filter: brightness(1.03); }
+.lg-btn--primary:active{ transform: translateY(0.5px); }
+
+/* Error banner */
+.lg-alert{
+  @apply mb-3 flex items-center gap-2 text-sm rounded-xl px-3 py-2;
+  background:#fef2f2;
+  color:#991b1b;
+  border:1px solid #fecaca;
+}
+.lg-alert svg{ flex: 0 0 auto; }
+
+/* Spinner */
+.lg-spinner{
+  width: 16px; height: 16px; border-radius: 999px;
+  border: 2px solid rgba(255,255,255,.45);
+  border-top-color: #fff;
+  animation: lg-spin .8s linear infinite;
+}
+@keyframes lg-spin{
+  to { transform: rotate(360deg); }
+}
